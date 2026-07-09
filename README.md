@@ -93,6 +93,7 @@ SpeakerCounter/
 ├── count.js
 ├── README.md
 ├── LICENSE
+├── .gitignore
 └── SpeakerCounter_image.png
 ```
 
