@@ -20,9 +20,7 @@
 
 ## 📷 画面イメージ
 
-|      入力画面      |      集計結果      |
-| :------------: | :------------: |
-| （スクリーンショットを追加） | （スクリーンショットを追加） |
+
 
 ---
 
@@ -30,7 +28,7 @@
 
 GitHub Pages
 
-https://（GitHub PagesのURL）
+https://harukahida.github.io/SpeakerCounter/
 
 ---
 
