@@ -319,3 +319,77 @@ function resetForm() {
         location.reload();
     }
 }
+
+
+/* Discord連携処理 */
+const discord_btn = document.getElementById("discord_btn");
+
+discord_btn.addEventListener("click", async () => {
+    const channelId = document.getElementById("discord_channel_id").value.trim();
+
+    if (!channelId) {
+        alert("DiscordのチャンネルIDを入力してください。");
+        return;
+    }
+
+    discord_btn.disabled = true;
+    discord_btn.textContent = "同期中...";
+
+    try {
+        // パソコン内で動いているNode.jsサーバー（ポート3000）のAPIを叩く
+        const response = await fetch(`http://localhost:3000/api/count/${channelId}`);
+        
+        if (!response.ok) {
+            throw new Error('サーバーエラーが発生しました。');
+        }
+
+        // バックエンドから計算済みの集計データ（配列）を受け取る
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // 既存の入力欄（#input_area）の中身を一度リセットする
+        const form = document.getElementById("input_area");
+        form.innerHTML = "";
+
+        // 取得したデータの人数分だけ、画面上に入力欄を自動生成して値をはめ込む
+        data.forEach(member => {
+            // 新しい行を追加
+            add_form_element();
+            
+            // いま追加された最新の行の「入力欄」と「カウンター」を特定する
+            const inputEl = document.getElementById("name_" + global_count);
+            const counterEl = document.getElementById("counter_" + global_count);
+            
+            if (inputEl && counterEl) {
+                inputEl.value = member.name;       // Discordのユーザー名をセット
+                counterEl.textContent = member.count; // 発言回数をセット
+
+                // カウントが0より大きいため、その行のマイナスボタンのロックを解除
+                // 行の中にある最後のボタン（＝マイナスボタン）を探す
+                const row = document.getElementById("form_area_" + global_count);
+                const minus_btn = row.querySelector('.counter_group button:last-of-type');
+                if (minus_btn) minus_btn.disabled = false;
+            }
+        });
+
+        // データの流し込みが終わったら、既存の「集計ボタン」を自動でクリック！
+        const submitBtn = document.getElementById("submit_btn");
+        if (submitBtn) {
+            submitBtn.click();
+        }
+
+        alert(`Discordから ${data.length} 人のデータを正常に同期しました！`);
+
+    } catch (error) {
+        console.error(error);
+        alert("バックエンドサーバーとの通信に失敗しました。server.js が起動しているか確認してください。");
+    } finally {
+        // ボタンの状態を元に戻す
+        discord_btn.disabled = false;
+        discord_btn.innerHTML = '<span class="material-icons" style="font-size: 18px; margin: 0;">download</span>同期';
+    }
+});

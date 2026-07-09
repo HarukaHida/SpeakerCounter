@@ -17,8 +17,8 @@
         <div class ="main_container">
             <div class="input_container">
             <h2>✔ カウント入力</h2>
-            <form id="input_area">
-            </form>
+            <form id="input_area"></form>
+
             <div class="btn">
                 <button id="add_btn"><span class="material-icons">add</span>入力欄を追加</button>
                 <div id="sbm_rst">
@@ -26,8 +26,18 @@
                 <button id="reset_btn" onclick="resetForm()"><span class="material-icons">refresh</span>リセット</button>
                 </div>
             </div>
-        </div>
         
+            <div class="discord_container" style="margin: 20px auto; padding: 15px; border-top: 1px dashed #c0c0c0;">
+                <h3 style="font-size: 16px; color: #5865F2;">👾 Discordから自動集計</h3>
+                <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px;">
+                    <input type="text" id="discord_channel_id" placeholder="チャンネルIDを入力" style="height: 35px; font-size: 16px; border-radius: 5px; border: 1px solid #c0c0c0; padding: 0 10px; width: 60%;">
+                    <button id="discord_btn" type="button" style="height: 35px; width: auto; padding: 0 15px; background-color: #5865F2; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+                        <span class="material-icons" style="font-size: 18px; margin: 0;">download</span>同期
+                    </button>
+                </div>
+            </div>
+
+        </div>
 
         <div class="result_container">
             <h2>🏆 集計結果</h2>
