@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <title>Speaker Counter</title>
+    </head>
+
+    <body>
+        <header>
+        <h1>🗣️ 発言回数カウンター 💬</h1>
+        <p>メンバーごとの発言回数をカウントし、集計結果をランキング形式で表示します。</p>
+        </header>
+
+        <main>
+        <div class ="main_container">
+            <div class="input_container">
+            <h2>✔ カウント入力</h2>
+            <form id="input_area">
+            </form>
+            <div class="btn">
+                <button id="add_btn"><span class="material-icons">add</span>入力欄を追加</button>
+                <div id="sbm_rst">
+                <button id="submit_btn"><span class="material-icons">bar_chart</span>集計</button>
+                <button id="reset_btn" onclick="resetForm()"><span class="material-icons">refresh</span>リセット</button>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="result_container">
+            <h2>🏆 集計結果</h2>
+            <div class="result_area"></div>
+        </div>
+        </div>
+        </main>
+    
+        <script src="count.js"></script>
+    </body>
+    
+</html>
