@@ -4,6 +4,7 @@ window.onload = function(){
 };
 
 let global_count = 0;
+
 /* 入力欄の追加 */
 function add_form_element(){
     var form_area = document.querySelector("#input_area");
@@ -17,7 +18,26 @@ function add_form_element(){
     var count = create_counter(num);
     var delete_btn = create_delete_btn(minus_btn);
 
+    // 初期状態（カウント0）の時は、負の値に行かないようマイナスボタンを無効化
     minus_btn.disabled = true;
+
+    // 生成する1人分の入力フォーム（form_area）のHTMLイメージ（例）
+    /* 
+    <form id="input_area">
+        <div id="form_area_1" class="form_area">
+            <input type="text" id="name_1" class="name_form">
+
+            <div class="counter_group">
+                <button type="button">+</button>
+                <span id="counter_1">0</span>
+                <button type="button">-</button>
+            </div>
+
+            <button type="button" class="delete_btn"><span class="material-icons">delete</span></button>
+
+        </div>
+    </form>
+    */
 
     var additional_form = document.createElement('div');
     additional_form.setAttribute('id', 'form_area_' + num);
@@ -36,7 +56,7 @@ function add_form_element(){
     var form = document.getElementById('input_area');
     form.appendChild(additional_form);
 
-    /* 入力欄にカーソルを合わせる */
+    /* 自動的に入力欄にカーソルを合わせる */
     if (count_form) {
         count_form.focus();
     }
@@ -86,6 +106,7 @@ function create_plus_btn(num, minus_btn){
         console.log(count);
         present.textContent = count;
 
+        // カウントが1以上になったためマイナスボタンを解禁
         if (count > 0 && minus_btn) {
             minus_btn.disabled = false;
         }
@@ -106,16 +127,18 @@ function create_minus_btn(num){
     btn.addEventListener("click", () => {
         console.log("minus_button for counter_" + num + " pressed.")
 
-        const present = document.getElementById("counter_" + num);
-        let present_count = parseInt(present.textContent);
+        const present = document.getElementById("counter_" + num); // 現在のカウントの値を取得（文字列）
+        let present_count = parseInt(present.textContent); // 数値に変換
         console.log("present: "+ present_count);
 
         let count = 0;
 
+        // 現在のカウントが0より大きければカウントを-1する
         if(present_count > 0){
             count = present_count - 1;
         }
 
+        // カウントが0になったらマイナスボタンを再び無効化
         if(count == 0){
             btn.disabled = true;
         }
@@ -125,6 +148,7 @@ function create_minus_btn(num){
     return btn;
 };
 
+/* 入力行の削除ボタンの追加 */
 function create_delete_btn(minus_btn){
     var btn = document.createElement('button');
     
@@ -142,14 +166,14 @@ function create_delete_btn(minus_btn){
 
         const row = btn.closest('.form_area');
         if (row) {
-            // 1. 現在画面にある「.form_area」の数をすべて数える
+            // 画面にある「.form_area」の数をすべて数える
             const all_rows = document.querySelectorAll('.form_area');
 
-            // 2. もし2行以上あるなら、通常通り削除する
+            // 2行以上ある場合は通常通り削除
             if (all_rows.length > 1) {
                 row.remove(); // 画面から消去
             } 
-            // 3. もし最後の1行なら、消さずに入力欄を「空欄」にしてカウントを「0」に戻す
+            // 最後の1行なら、消さずに入力欄を「空欄」にしてカウントを「0」に戻す
             else {
                 // 行の中にある入力欄（input）を探して、文字を空っぽにする
                 const input = row.querySelector('.name_form');
@@ -159,6 +183,7 @@ function create_delete_btn(minus_btn){
                 const count_display = row.querySelector('span'); // 例
                 if (count_display) count_display.textContent = "0";
 
+                // 最後の1行をリセットしたことでカウントが0に戻ったためマイナスボタンを無効化
                 if (minus_btn) minus_btn.disabled = true;
             }
         }
@@ -170,7 +195,7 @@ function create_delete_btn(minus_btn){
 
 const add_form = document.getElementById("add_btn");
 
-/* 入力欄の追加ボタンが押されるたびにadd_form_element()を実行 */
+// 入力欄の追加ボタンが押されるたびにadd_form_element()を実行
 add_form.addEventListener("click", () => {
     add_form_element();
 });
@@ -178,15 +203,18 @@ add_form.addEventListener("click", () => {
 const submit_btn = document.getElementById("submit_btn");
 const members = [];
 
+/* カウント数の集計とランク付け */
 submit_btn.addEventListener("click", () => {
     const form = document.getElementById("input_area");
 
     members.length = 0;
 
-    const all_forms = document.querySelectorAll(".form_area");
+    // 画面上で「今実在しているすべての.form_area（行）」をquerySelectorAllにより全件取得
+    const all_forms = document.querySelectorAll(".form_area"); 
 
     all_forms.forEach(formEl => {
-        // クラス名を使って、名前の入力欄と数字のspanを1対1で確実に取得
+        // クラス名を使って、名前の入力欄と数字のspanを確実に取得
+        // querySelectorは指定された条件（クラス名やタグ名など）にマッチする要素のうち、HTMLの上から順番に探して『一番最初に見つかった1つだけ』を連れてくる
         const inputEl = formEl.querySelector(".name_form");
         const counterEl = formEl.querySelector("span");
 
@@ -200,18 +228,15 @@ submit_btn.addEventListener("click", () => {
     });
     console.log(members);
 
-    /* カウント数の大きい順にソート */
+    // カウント数の大きい順にソート 
     members.sort(function(a, b){
-        return b.count - a.count; //sort()は、計算結果が正／0／負のいずれかになることで並び替える。正（bの方が大きい）：bを後ろへ、負（bの方が小さい）：bを前へ。今回は数が大きい順にしたいのでb-aになっている。
+        // sort()は、計算結果が正／0／負のいずれかになることで並び替える。
+        // 正（bの方が大きい）：bを後ろへ、負（bの方が小さい）：bを前へ。今回は数が大きい順にしたいのでb-aになっている。
+        return b.count - a.count; 
     })
 
-    
-    members.forEach(member => {
-        console.log(member.name);
-    });
-
     const result_area = document.querySelector(".result_area");
-    result_area.innerHTML = "";
+    result_area.innerHTML = ""; // 前回の集計結果テーブルをクリア
 
     const table = document.createElement("table");
     table.setAttribute('id', 'result_table');
@@ -242,13 +267,17 @@ submit_btn.addEventListener("click", () => {
 
         const rank_cell = document.createElement("td");
 
+        // 単に上から順番に1, 2, 3...と順位をつけるのではなく、カウント数が同じメンバーがいた場合に
+        //「同率3位が2人存在し、次のメンバーは5位になる」という正しい順位算出アルゴリズムを再現
+        
         // 2人目以降（index > 0）のとき、1つ前の人とカウントを比べる
         if(index > 0){
             const previousItem = members[index - 1];
 
             if(member.count == previousItem.count){
-
+                // もし1つ前の人とカウントが同じなら順位（rank）の数字は据え置き
             }else{
+                // 前の人とカウントが違うなら、現在のindexに1を足したものを新しい順位とする
                 rank = index + 1;
             }
         }
@@ -284,6 +313,7 @@ submit_btn.addEventListener("click", () => {
 
 });
 
+/* 画面全体のリセット */
 function resetForm() {
     if(confirm('入力をすべてリセットして最初からやり直しますか？')){
         location.reload();
