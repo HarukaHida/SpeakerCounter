@@ -29,7 +29,6 @@
 ## 画面イメージ
 
 ![Speaker Counter](SpeakerCounter_image.png)
-![Speaker Counter](SpeakerCounter_demo_image.png)
 ---
 
 ## デモ
